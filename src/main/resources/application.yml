@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    password: 19970819wy
+    username: root
+    url: jdbc:mysql://10.13.119.149:9999/pcdb?useSSL=false&useUnicode=true&characterEncoding=utf-8
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+security:
+  user:
+    name: admin
+    password: admin
+logging:
+  level:
+    org:
+      springframework:
+        security: info
+
