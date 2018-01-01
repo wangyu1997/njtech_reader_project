@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @RestController
 @Api("管理员书籍管理相关api")
+@RequestMapping("/admin/books")
 public class AdminBookController {
     private final CategoryRepository categoryRepository;
     private final BookRepository bookRepository;
@@ -30,16 +32,16 @@ public class AdminBookController {
         this.bookRepository = bookRepository;
     }
 
-    @ApiOperation(value = "增加书籍", notes = "根据书籍信息")
+    @ApiOperation(value = "增加书籍", notes = "根据书籍信息",httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "title", value = "书籍名称", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "imgSrc", value = "书籍图片url地址", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "description", value = "书籍简介", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "contentUrl", value = "书籍文本txt url地址", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "category_id", value = "书籍类别id 用英文符号;隔开 如：1;2;4;5", required = true, dataType = "String")
+            @ApiImplicitParam(name = "title", value = "书籍名称", required = true, dataType = "String",paramType = "form"),
+            @ApiImplicitParam(name = "imgSrc", value = "书籍图片url地址", required = true, dataType = "String",paramType = "form"),
+            @ApiImplicitParam(name = "description", value = "书籍简介", required = true, dataType = "String",paramType = "form"),
+            @ApiImplicitParam(name = "contentUrl", value = "书籍文本txt url地址", required = true, dataType = "String",paramType = "form"),
+            @ApiImplicitParam(name = "category_id", value = "书籍类别id 用英文符号;隔开 如：1;2;4;5", required = true, dataType = "String",paramType = "form")
     })
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping(value = "/admin/book")
+    @PostMapping(value = "")
     public HttpResponse<String> addCategory(String title, String imgSrc, String description, String contentUrl, String category_id) throws Exception {
         String[] c_ids = category_id.split(";");
         Category category;

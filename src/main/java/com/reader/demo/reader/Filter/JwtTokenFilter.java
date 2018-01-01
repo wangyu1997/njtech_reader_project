@@ -26,7 +26,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Value("token")
     private String tokenHeader;
 
-    @Value("Bearer")
+    @Value("auth:")
     private String tokenHead;
 
     @Autowired
@@ -39,6 +39,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain chain) throws ServletException, IOException {
         String authHeader = request.getHeader(this.tokenHeader);
+        System.out.println(authHeader);
         if (authHeader != null && authHeader.startsWith(tokenHead)) {
             final String authToken = authHeader.substring(tokenHead.length()); // The part after "Bearer "
             System.out.println(authToken);

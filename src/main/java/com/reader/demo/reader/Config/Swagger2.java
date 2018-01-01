@@ -32,22 +32,24 @@ public class Swagger2 {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.reader.demo.reader.Controller"))
                 .paths(PathSelectors.any())
-                .build();
+                .build()
+                .globalOperationParameters(params);
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("阅读管理系统 API v1.0")
                 .description("关于一个阅读管理的系统")
-                .termsOfServiceUrl("https://www.github.com/wangyu1997")
+                .termsOfServiceUrl("https://github.com/wangyu1997/njtech_reader_project.git")
                 .contact("wangyu and loner")
                 .version("1.0")
                 .build();
     }
 
     @Bean
-    public UiConfiguration getConfig(){
-        return new UiConfiguration(null);
+    public UiConfiguration getConfig() {
+        String validateUrl = "validateUrl";
+        return new UiConfiguration(validateUrl);
     }
 
 }

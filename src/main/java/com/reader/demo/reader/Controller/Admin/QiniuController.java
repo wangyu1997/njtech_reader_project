@@ -15,10 +15,10 @@ import java.util.Map;
 
 @RestController
 @Api("七牛认证相关api")
-@RequestMapping("/admin")
+@RequestMapping("/admin/qiniu")
 public class QiniuController {
     @ApiOperation(value = "获取七牛云token", notes = "获取七牛token")
-    @RequestMapping(value = "/qiniu/token", method = RequestMethod.GET)
+    @RequestMapping(value = "/token", method = RequestMethod.GET)
     public HttpResponse<Map<String, String>> qiNiuToken() {
         String accessKey = "0QTSvPXnvfdzIVJfwGoK1sFkBzhfiVw9mwUw8n6A";
         String secretKey = "lyqOdY3wt7jkCHW3Czc1ltaBwLPgpuoeCTMJtGOC";

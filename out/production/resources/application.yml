@@ -17,4 +17,5 @@ logging:
     org:
       springframework:
         security: info
-
+server:
+  port: 8080
