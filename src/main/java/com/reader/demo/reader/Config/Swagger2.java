@@ -41,7 +41,7 @@ public class Swagger2 {
                 .title("阅读管理系统 API v1.0")
                 .description("关于一个阅读管理的系统")
                 .termsOfServiceUrl("https://github.com/wangyu1997/njtech_reader_project.git")
-                .contact("wangyu and loner")
+                .contact("RenBuRuGu and Loner")
                 .version("1.0")
                 .build();
     }

@@ -8,10 +8,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,7 +25,7 @@ public class BookController {
     }
 
 
-    @ApiOperation(value = "获取书籍信息", notes = "获取书籍信息",httpMethod = "GET")
+    @ApiOperation(value = "获取书籍信息", notes = "获取书籍信息", httpMethod = "GET")
     @GetMapping(value = "")
     public HttpResponse<List<Book>> getAll() {
         List<Book> books = bookRepository.findAll();
@@ -38,29 +35,31 @@ public class BookController {
         return httpResponse;
     }
 
-    @ApiOperation(value = "按书籍名字获取书籍信息", notes = "获取书籍信息",httpMethod = "GET")
+    @ApiOperation(value = "根据书籍名称模糊查询书籍信息", notes = "模糊查询书籍信息", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "title", value = "书籍名称", required = true, dataType = "String",paramType = "path")
+            @ApiImplicitParam(name = "title", value = "书籍名称", required = true, dataType = "String", paramType = "path"),
     })
-    @GetMapping(value = "/name/{title}")
-    public HttpResponse<Book> getByTitle(@PathVariable("title") String title) {
-        Book book = bookRepository.findBookByTitle(title);
+    @GetMapping("/title/{title}")
+    public HttpResponse<?> findUserLikeUserName(@PathVariable String title) {
+        List<Book> books = bookRepository.findLikeBookTitle(title);
+        HttpResponse<List<Book>> response = new HttpResponse<>();
+        response.setMessage("Success");
+        response.setData(books);
+        return response;
+    }
+
+
+    @ApiOperation(value = "按书本id查找书籍信息", notes = "按书本id查找书籍信息", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "书籍Id", required = true, dataType = "Long", paramType = "path"),
+    })
+    @GetMapping("/{id}")
+    public HttpResponse<?> getBookById(@PathVariable Long id) throws Exception {
         HttpResponse<Book> httpResponse = new HttpResponse<>();
+        Book book = bookRepository.findBookById(id);
         httpResponse.setMessage("success");
         httpResponse.setData(book);
         return httpResponse;
     }
 
-    @ApiOperation(value = "按书籍id获取书籍信息", notes = "获取书籍信息",httpMethod = "GET")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "书籍id", required = true, dataType = "Long",paramType = "path")
-    })
-    @GetMapping(value = "/{id}")
-    public HttpResponse<Book> getById(@PathVariable("id") Long id) {
-        Book book = bookRepository.findBookById(id);
-        HttpResponse<Book> httpResponse = new HttpResponse<>();
-        httpResponse.setMessage("success");
-        httpResponse.setData(book);
-        return httpResponse;
-    }
 }

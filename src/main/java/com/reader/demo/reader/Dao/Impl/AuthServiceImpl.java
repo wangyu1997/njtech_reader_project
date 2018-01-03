@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private RoleRepository roleRepository;
     private final static String USER_PROPERTY = "ROLE_USER";
 
-    @Value("Bearer")
+    @Value("auth:")
     private String tokenHead;
 
     @Autowired
@@ -46,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public SysUser register(String username, String password, String email, String name) throws Exception {
+    public SysUser register(String headSrc,String username, String password, String email, String name) throws Exception {
         if (userRepository.findUserByUsername(username) != null) {
             throw new Exception("Username is already exist");
         }
@@ -57,6 +57,7 @@ public class AuthServiceImpl implements AuthService {
             throw new Exception("no user role exist");
         List<SysRole> roleList = user.getRoles();
         roleList.add(role);
+        user.setHeadSrc(headSrc);
         user.setRoles(roleList);
         user.setUsername(username);
         user.setPassword(encoder.encode(password));
@@ -91,4 +92,13 @@ public class AuthServiceImpl implements AuthService {
         }
         return null;
     }
+
+    @Override
+    public SysUser getCurrentUser(String oldToken) {
+        final String token = oldToken.substring(tokenHead.length());
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        return (SysUser) userDetailsService.loadUserByUsername(username);
+    }
+
+
 }  

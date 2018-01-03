@@ -68,15 +68,16 @@ public class AuthController {
 
     @ApiOperation(value = "用户注册", notes = "根据用户名密码进行注册,返回用户信息", httpMethod = "POST")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "headSrc", value = "用户头像", required = true, dataType = "String", paramType = "form"),
             @ApiImplicitParam(name = "username", value = "用户昵称", required = true, dataType = "String", paramType = "form"),
             @ApiImplicitParam(name = "password", value = "用户密码", required = true, dataType = "String", paramType = "form"),
             @ApiImplicitParam(name = "email", value = "用户邮箱", required = true, dataType = "String", paramType = "form"),
             @ApiImplicitParam(name = "name", value = "用户名字", required = true, dataType = "String", paramType = "form")
     })
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public HttpResponse<?> register(String username, String password, String email, String name) throws Exception {
+    public HttpResponse<?> register(String headSrc,String username, String password, String email, String name) throws Exception {
         HttpResponse<SysUser> response = new HttpResponse<>();
-        response.setData(authService.register(username, password, email, name));
+        response.setData(authService.register(headSrc,username, password, email, name));
         response.setMessage("success");
         return response;
     }

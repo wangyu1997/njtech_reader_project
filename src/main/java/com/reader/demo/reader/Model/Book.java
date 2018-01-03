@@ -1,5 +1,6 @@
 package com.reader.demo.reader.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class Book {
     private String description;
     private String contentUrl;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "books")
     private Set<SysUser> users = new HashSet<>();
 

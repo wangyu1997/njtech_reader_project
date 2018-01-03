@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RoleRepository extends JpaRepository<SysRole, Long> {
     SysRole findSysRoleByName(String name);
+
+    SysRole findSysRoleById(Long id);
 }
