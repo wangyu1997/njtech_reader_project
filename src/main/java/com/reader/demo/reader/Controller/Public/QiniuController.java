@@ -1,4 +1,4 @@
-package com.reader.demo.reader.Controller.Admin;
+package com.reader.demo.reader.Controller.Public;
 
 import com.google.gson.Gson;
 import com.qiniu.util.Auth;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @Api("七牛认证相关api")
-@RequestMapping("/admin/qiniu")
+@RequestMapping("/public/qiniu")
 public class QiniuController {
     @ApiOperation(value = "获取七牛云token", notes = "获取七牛token")
     @RequestMapping(value = "/token", method = RequestMethod.GET)

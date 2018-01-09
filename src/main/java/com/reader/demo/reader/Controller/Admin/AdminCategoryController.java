@@ -72,7 +72,7 @@ public class AdminCategoryController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "标签Id", required = true, dataType = "Long", paramType = "path")
     })
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public HttpResponse<?> deleteCategory(@PathVariable Long id) throws Exception {
         HttpResponse<String> httpResponse = new HttpResponse<>();
         if (categoryRepository.deleteBookById(id) == 1)

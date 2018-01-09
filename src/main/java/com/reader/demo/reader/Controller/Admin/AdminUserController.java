@@ -69,17 +69,17 @@ public class AdminUserController {
         SysUser user = userRepository.findSysUserById(id);
         if (user == null)
             throw new Exception("The User which id is " + id + " is not exist");
-        if (!headSrc.isEmpty())
+        if (headSrc!=null&&!headSrc.isEmpty())
             user.setHeadSrc(headSrc);
-        if (!password.isEmpty()) {
+        if (password!=null&&!password.isEmpty()) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             user.setPassword(encoder.encode(password));
         }
-        if (!email.isEmpty())
+        if (email!=null&&!email.isEmpty())
             user.setEmail(email);
-        if (!name.isEmpty())
+        if (name!=null&&!name.isEmpty())
             user.setName(name);
-        if (!roles.isEmpty()) {
+        if (roles!=null&&!roles.isEmpty()) {
             List<SysRole> roleList = getRolesByString(roles);
             user.setRoles(roleList);
         }

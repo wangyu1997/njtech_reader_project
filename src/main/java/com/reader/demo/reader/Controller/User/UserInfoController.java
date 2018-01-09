@@ -13,9 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -40,37 +38,45 @@ public class UserInfoController {
     @ApiOperation(value = "修改个人信息", notes = "用户修改个人信息", httpMethod = "PUT")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "headSrc", value = "用户头像", dataType = "String", paramType = "form"),
-            @ApiImplicitParam(name = "username", value = "用户昵称", dataType = "String", paramType = "form"),
-            @ApiImplicitParam(name = "password", value = "用户密码",  dataType = "String", paramType = "form"),
-            @ApiImplicitParam(name = "email", value = "用户邮箱",dataType = "String", paramType = "form"),
-            @ApiImplicitParam(name = "name", value = "用户名字",  dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "password", value = "用户密码", dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "email", value = "用户邮箱", dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "name", value = "用户名字", dataType = "String", paramType = "form"),
     })
-    @PutMapping("/{id}")
-    public HttpResponse<?> updateBook(String headSrc, String password, String email, String name, HttpServletRequest httpServletRequest) throws Exception {
+    @PutMapping("")
+    public HttpResponse<?> updateUser(String headSrc, String password, String email, String name, HttpServletRequest httpServletRequest) throws Exception {
         HttpResponse<SysUser> response = new HttpResponse<>();
         String token = httpServletRequest.getHeader(tokenHeader);
         SysUser user = authService.getCurrentUser(token);
-        System.out.println("\n\n\n"+user);
         if (user == null) {
             response.setCode(HttpResponse.ERROR);
             response.setMessage("Login First!");
         } else {
-            if (!headSrc.isEmpty())
+            if (headSrc!=null&&!headSrc.isEmpty())
                 user.setHeadSrc(headSrc);
-            if (!password.isEmpty()) {
+            if (password!=null&&!password.isEmpty()) {
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 user.setPassword(encoder.encode(password));
             }
-            if (!email.isEmpty())
+            if (email!=null&&!email.isEmpty())
                 user.setEmail(email);
-            if (!name.isEmpty())
+            if (name!=null&&!name.isEmpty())
                 user.setName(name);
-            System.out.println(user);
             if (userRepository.save(user) != null) {
                 response.setMessage("success");
                 response.setData(user);
             } else response.setMessage("failed");
         }
+        return response;
+    }
+
+    @ApiOperation(value = "获取个人信息", notes = "用户获取个人信息", httpMethod = "GET")
+    @GetMapping("")
+    public HttpResponse<?> getInfo(HttpServletRequest httpServletRequest) throws Exception {
+        HttpResponse<SysUser> response = new HttpResponse<>();
+        String token = httpServletRequest.getHeader(tokenHeader);
+        SysUser user = authService.getCurrentUser(token);
+        response.setMessage("success");
+        response.setData(user);
         return response;
     }
 }

@@ -1,124 +1,36 @@
-package com.reader.demo.reader.Controller.User;
+package com.reader.demo.reader.Controller;
 
-import com.reader.demo.reader.Dao.AuthService;
-import com.reader.demo.reader.Model.Book;
-import com.reader.demo.reader.Model.HttpResponse;
-import com.reader.demo.reader.Model.SysUser;
-import com.reader.demo.reader.Repository.BookRepository;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import javax.annotation.security.PermitAll;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 
 @RestController
-@Api("用户收藏图书api")
-@RequestMapping("/user/books")
-public class CollectController {
-    @Value("token")
-    private String tokenHeader;
-    final BookRepository bookRepository;
-    final AuthService authService;
+@ApiIgnore
+@PermitAll
+@RequestMapping(value = "/hao")
+public class OtherController {
 
-    @Autowired
-    public CollectController(BookRepository bookRepository, AuthService authService) {
-        this.bookRepository = bookRepository;
-        this.authService = authService;
-    }
-
-    @ApiOperation(value = "添加收藏", notes = "添加书本信息收藏", httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "bookId", value = "书本Id", required = true, dataType = "Long", paramType = "form")
-    })
-    @PostMapping("/collect/add")
-    public HttpResponse<?> addToCollect(Long bookId, HttpServletRequest httpServletRequest) {
-        HttpResponse<SysUser> response = new HttpResponse<>();
-        String token = httpServletRequest.getHeader(tokenHeader);
-        SysUser user = authService.getCurrentUser(token);
-        if (user == null) {
-            response.setCode(HttpResponse.ERROR);
-            response.setMessage("Login First!");
-        } else {
-            Long userId = user.getId();
-            Book book = bookRepository.findBookById(bookId);
-            int cnt = bookRepository.findCollectCountByBookIdAndUserId(userId, bookId);
-            if (book == null) {
-                response.setCode(HttpResponse.ERROR);
-                response.setMessage("The Book is not exist!");
-            } else if (cnt > 0) {
-                response.setCode(HttpResponse.ERROR);
-                response.setMessage("You have already collected this book!");
-            } else {
-                int result = bookRepository.addCollection(userId, bookId);
-                if (result == 1)
-                    response.setMessage("success");
-                else {
-                    response.setCode(HttpResponse.ERROR);
-                    response.setMessage("You have already added!");
-                }
-            }
-        }
-        return response;
-    }
-
-    @ApiOperation(value = "取消收藏", notes = "取消书本信息收藏", httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "bookId", value = "书本Id", required = true, dataType = "Long", paramType = "form")
-    })
-    @PostMapping("/collect/cancel")
-    public HttpResponse<?> cancelCollect(Long bookId, HttpServletRequest httpServletRequest) {
-        HttpResponse<SysUser> response = new HttpResponse<>();
-        String token = httpServletRequest.getHeader(tokenHeader);
-        SysUser user = authService.getCurrentUser(token);
-        if (user == null) {
-            response.setCode(HttpResponse.ERROR);
-            response.setMessage("Login First!");
-        } else {
-            Long userId = user.getId();
-            Book book = bookRepository.findBookById(bookId);
-            int cnt = bookRepository.findCollectCountByBookIdAndUserId(userId, bookId);
-            if (book == null) {
-                response.setCode(HttpResponse.ERROR);
-                response.setMessage("The Book is not exist!");
-            } else if (cnt == 0) {
-                response.setCode(HttpResponse.ERROR);
-                response.setMessage("You have not collected this book!");
-            } else {
-                int result = bookRepository.cancelCollection(userId, bookId);
-                if (result == 1)
-                    response.setMessage("success");
-                else {
-                    response.setCode(HttpResponse.ERROR);
-                    response.setMessage("Cancel failed!");
-                }
-            }
-        }
-        return response;
+    @GetMapping("/query")
+    public String addToCollect(String function, String outputsize, String symbol, String apikey) throws IOException {
+        URL url = new URL("https://www.alphavantage.co/query"
+                + "?function=" + function + "&outputsize=" + outputsize+"&symbol=" + symbol + "&apikey=" + apikey);
+        System.out.println(url);
+        URLConnection connection = url.openConnection();
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                connection.getInputStream()));
+        StringBuilder builder = new StringBuilder();
+        String line;
+        while ((line = in.readLine()) != null)
+            builder.append(line).append("\n");
+        in.close();
+        return builder.toString();
     }
 
 
-    @ApiOperation(value = "用户查询所有收藏书本信息", notes = "用户查询所有收藏书本信息", httpMethod = "GET")
-    @GetMapping("")
-    public HttpResponse<?> findAllCollect(HttpServletRequest httpServletRequest) {
-        HttpResponse<List<Book>> response = new HttpResponse<>();
-        String token = httpServletRequest.getHeader(tokenHeader);
-        SysUser user = authService.getCurrentUser(token);
-        if (user == null) {
-            response.setCode(HttpResponse.ERROR);
-            response.setMessage("Login First!");
-        } else {
-            List<Book> books = bookRepository.findAllCollectById(user.getId());
-            response.setMessage("success");
-            response.setData(books);
-        }
-        return response;
-    }
 }
